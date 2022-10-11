@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../blitz"
+		},
+		{
+			"path": "../portfolio"
+		}
+	],
+	"settings": {}
+}

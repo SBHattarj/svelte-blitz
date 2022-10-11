@@ -1,0 +1,4 @@
+[submodule "vite-multy-index-support"]
+	path = vite-multy-index-support
+	url = git@github.com:SBHattarj/vite-ts-path-with-multy-index-support
+	branch = multy-index-support
