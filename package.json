@@ -1,14 +1,24 @@
 {
 	"name": "svelte-blitz",
-	"version": "0.0.1b",
+	"version": "0.1.1f",
 	"main": "./lib/server.cjs",
 	"browser": "./lib/client.cjs",
 	"types": "./types.d.ts",
-	"type": "commonjs",
+	"exports": {
+		".": "./lib/server.mjs",
+		"./plugin": {
+			"types": "./plugin/index.d.ts",
+			"import": "./plugin/index.mjs"
+		},
+		"./*": "./*"
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"build-lib": "tsc -p tsconfig.library.json",
+		"build-lib-common": "tsc -p tsconfig.library.json --module commonjs",
+		"build-lib-esnext": "tsc -p tsconfig.library.json --module esnext",
+		"build-plugin-common": "tsc -p tsconfig.plugin.json --module commonjs",
+		"build-plugin-esnext": "tsc -p tsconfig.plugin.json --module esnext",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
@@ -27,9 +37,8 @@
 		"kleur": "^4.1.5",
 		"mrmime": "^1.0.1",
 		"prisma": "^4.3.1",
-		"rollup-plugin-node-polyfills": "^0.2.1",
+		"rollup-plugin-polyfill-node": "^0.10.2",
 		"set-cookie-parser": "^2.5.1"
-
 	},
 	"engines": {
 		"node": ">=16.17.0"
@@ -38,20 +47,20 @@
 		"schema": "db/schema.prisma"
 	},
 	"dependencies": {
-		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/kit": "next",
-		"@blitzjs/auth": "^2.0.0-beta.3",
-		"@blitzjs/next": "^2.0.0-alpha.44",
-		"@blitzjs/rpc": "^2.0.0-beta.4",
+		"@blitzjs/auth": "^2.0.0-beta.11",
+		"@blitzjs/next": "^2.0.0-beta.11",
+		"@blitzjs/rpc": "^2.0.0-beta.11",
 		"@esbuild-plugins/node-globals-polyfill": "^0.1.1",
 		"@prisma/client": "^4.3.1",
-		"blitz": "^2.0.0-beta.4",
+		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/kit": "next",
+		"blitz": "^2.0.0-beta.11",
 		"express": "^4.18.1",
 		"glob": "^8.0.3",
 		"next": "^12.3.1",
 		"node-mocks-http": "^1.11.0",
-		"rollup-plugin-polyfill-node": "^0.10.2",
-		"vite-multy-index-support": "file:vite-multy-index-support",
+		"vite-multy-index-support": "^0.0.1-i",
+		"rollup-plugin-node-polyfills": "^0.2.1",
 		"vite-tsconfig-paths": "^3.5.0"
 	}
 }

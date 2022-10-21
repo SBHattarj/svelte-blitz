@@ -22,7 +22,7 @@
 		"moduleResolution": "node",
 		"outDir": "lib",
 		"target": "esnext",
-		"module": "commonjs",
+		// "module": "commonjs",
 		"declaration": true
 	},
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
@@ -45,5 +45,9 @@
 		// "app/**/*.js",
 		// "app/**/*.svelte",
 		"@blitzjs/sveltekit"
+	],
+	"exclude": [
+		"@blitzjs/sveltekit/plugin.ts",
+		"@blitzjs/sveltekit/**/*.mjs"
 	]
 }

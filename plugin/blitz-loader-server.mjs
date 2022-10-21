@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.transformBlitzRpcServer = exports.recursiveFindResolvers = exports.collectResolvers = void 0;
-const path_1 = require("path");
-const fs_1 = require("fs");
-const loader_utils_mjs_1 = require("./chunks/loader-utils.mjs");
-require("blitz");
+import { posix, dirname, join } from 'path';
+import { promises } from 'fs';
+import { b as buildPageExtensionRegex, a as assertPosixPath, c as convertPageFilePathToRoutePath, d as topLevelFoldersThatMayContainResolvers, g as getIsRpcFile } from './chunks/loader-utils.mjs';
+import 'blitz';
 /**
  *
  * @param {string} src
@@ -14,22 +11,20 @@ require("blitz");
  * @param {{resolverBasePath: string}} [options]
  * @returns {Promise<string>}
  */
-async function transformBlitzRpcServer(src, id, root, resolvers, options) {
-    (0, loader_utils_mjs_1.a)(id);
-    (0, loader_utils_mjs_1.a)(root);
+export default async function transformBlitzRpcServer(src, id, root, resolvers, options) {
+    assertPosixPath(id);
+    assertPosixPath(root);
     const blitzImport = 'import { __internal_addBlitzRpcResolver } from "@blitzjs/rpc";';
     let code = blitzImport + src;
     code += "\n\n";
     for (let resolverFilePath of resolvers) {
-        const relativeResolverPath = path_1.posix.relative((0, path_1.dirname)(id), (0, path_1.join)(root, resolverFilePath));
-        const routePath = (0, loader_utils_mjs_1.c)(resolverFilePath, options?.resolverBasePath);
+        const relativeResolverPath = posix.relative(dirname(id), join(root, resolverFilePath));
+        const routePath = convertPageFilePathToRoutePath(resolverFilePath, options?.resolverBasePath);
         code += `__internal_addBlitzRpcResolver('${routePath}', () => import('${relativeResolverPath}'));`;
         code += "\n";
     }
     return code;
 }
-exports.default = transformBlitzRpcServer;
-exports.transformBlitzRpcServer = transformBlitzRpcServer;
 /**
  *
  * @param {string} directory
@@ -37,9 +32,8 @@ exports.transformBlitzRpcServer = transformBlitzRpcServer;
  * @returns {Promise<string[]>}
  */
 function collectResolvers(directory, pageExtensions) {
-    return recursiveFindResolvers(directory, (0, loader_utils_mjs_1.b)(pageExtensions));
+    return recursiveFindResolvers(directory, buildPageExtensionRegex(pageExtensions));
 }
-exports.collectResolvers = collectResolvers;
 /**
  *
  * @param {string} dir
@@ -50,15 +44,15 @@ exports.collectResolvers = collectResolvers;
  * @returns {Promise<string[]>}
  */
 async function recursiveFindResolvers(dir, filter, ignore, arr = [], rootDir = dir) {
-    let folders = await fs_1.promises.readdir(dir);
+    let folders = await promises.readdir(dir);
     if (dir === rootDir) {
-        folders = folders.filter((folder) => loader_utils_mjs_1.d.includes(folder));
+        folders = folders.filter((folder) => topLevelFoldersThatMayContainResolvers.includes(folder));
     }
     await Promise.all(folders.map(async (part) => {
-        const absolutePath = (0, path_1.join)(dir, part);
+        const absolutePath = join(dir, part);
         if (ignore && ignore.test(part))
             return;
-        const pathStat = await fs_1.promises.stat(absolutePath);
+        const pathStat = await promises.stat(absolutePath);
         if (pathStat.isDirectory()) {
             await recursiveFindResolvers(absolutePath, filter, ignore, arr, rootDir);
             return;
@@ -67,12 +61,12 @@ async function recursiveFindResolvers(dir, filter, ignore, arr = [], rootDir = d
             return;
         }
         const relativeFromRoot = absolutePath.replace(rootDir, "");
-        if ((0, loader_utils_mjs_1.g)(relativeFromRoot)) {
+        if (getIsRpcFile(relativeFromRoot)) {
             arr.push(relativeFromRoot);
             return;
         }
     }));
     return arr.sort();
 }
-exports.recursiveFindResolvers = recursiveFindResolvers;
+export { collectResolvers, recursiveFindResolvers, transformBlitzRpcServer };
 //# sourceMappingURL=blitz-loader-server.mjs.map

@@ -1,17 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.t = exports.g = exports.f = exports.e = exports.d = exports.c = exports.b = exports.a = void 0;
-const blitz_1 = require("blitz");
-const path_1 = require("path");
+import { assert } from 'blitz';
+import { win32, sep, posix } from 'path';
 /**
  *
  * @param {string} path
  */
 function assertPosixPath(path) {
     const errMsg = `Wrongly formatted path: ${path}`;
-    (0, blitz_1.assert)(!path.includes(path_1.win32.sep), errMsg);
+    assert(!path.includes(win32.sep), errMsg);
 }
-exports.a = assertPosixPath;
 /**
  *
  * @param {string} path
@@ -19,20 +15,18 @@ exports.a = assertPosixPath;
  */
 function toPosixPath(path) {
     if (process.platform !== 'win32') {
-        (0, blitz_1.assert)(path_1.sep === path_1.posix.sep, 'TODO');
+        assert(sep === posix.sep, 'TODO');
         assertPosixPath(path);
         return path;
     }
     else {
-        (0, blitz_1.assert)(path_1.sep === path_1.win32.sep, 'TODO');
-        const pathPosix = path.split(path_1.win32.sep).join(path_1.posix.sep);
+        assert(sep === win32.sep, 'TODO');
+        const pathPosix = path.split(win32.sep).join(posix.sep);
         assertPosixPath(pathPosix);
         return pathPosix;
     }
 }
-exports.t = toPosixPath;
 const topLevelFoldersThatMayContainResolvers = ['src', 'app', 'integrations'];
-exports.d = topLevelFoldersThatMayContainResolvers;
 /**
  *
  * @param {string[]} pageExtensions
@@ -41,7 +35,6 @@ exports.d = topLevelFoldersThatMayContainResolvers;
 function buildPageExtensionRegex(pageExtensions) {
     return new RegExp(`(?<!\\.test|\\.spec)\\.(?:${pageExtensions.join('|')})$`);
 }
-exports.b = buildPageExtensionRegex;
 const fileExtensionRegex = /\.([a-z]+)$/;
 /**
  *
@@ -58,7 +51,6 @@ function convertPageFilePathToRoutePath(filePath, resolverBasePath) {
         .replace(/^.*?[\\/]mutations[\\/]/, '/')
         .replace(fileExtensionRegex, '');
 }
-exports.c = convertPageFilePathToRoutePath;
 /**
  *
  * @param {string} filePathFromAppRoot
@@ -69,7 +61,6 @@ function convertFilePathToResolverName(filePathFromAppRoot) {
         .replace(/^.*[\\/](queries|mutations)[\\/]/, '')
         .replace(fileExtensionRegex, '');
 }
-exports.e = convertFilePathToResolverName;
 /**
  *
  * @param {string} filePathFromAppRoot
@@ -78,7 +69,6 @@ exports.e = convertFilePathToResolverName;
 function convertFilePathToResolverType(filePathFromAppRoot) {
     return filePathFromAppRoot.match(/[\\/]queries[\\/]/) ? 'query' : 'mutation';
 }
-exports.f = convertFilePathToResolverType;
 /**
  *
  * @param {string} filePathFromAppRoot
@@ -87,5 +77,5 @@ exports.f = convertFilePathToResolverType;
 function getIsRpcFile(filePathFromAppRoot) {
     return (/[\\/]queries[\\/]/.test(filePathFromAppRoot) || /[\\/]mutations[\\/]/.test(filePathFromAppRoot));
 }
-exports.g = getIsRpcFile;
+export { assertPosixPath as a, buildPageExtensionRegex as b, convertPageFilePathToRoutePath as c, topLevelFoldersThatMayContainResolvers as d, convertFilePathToResolverName as e, convertFilePathToResolverType as f, getIsRpcFile as g, toPosixPath as t };
 //# sourceMappingURL=loader-utils.mjs.map

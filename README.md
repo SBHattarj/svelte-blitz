@@ -14,7 +14,7 @@ You can start using this by first creating the default sveltekit typescript bare
 1. change contents of vite.config.ts to the following
 ```ts
 import type { UserConfig } from 'vite';
-import { svelteBlitz } from 'svelte-blitz';
+import { svelteBlitz } from 'svelte-blitz/plugin';
 
 const config: UserConfig = {
 	plugins: [
