@@ -55,7 +55,7 @@ export function svelteBlitz(viteMultyIndexOptions?: Parameters<typeof viteMultyI
 				if(!prismaIsInstalled) execSync("npm i prisma", {stdio: [0, 1, 2]})
 				if(!prismaClientIsInstalled) execSync("npm i @prisma/client", {stdio: [0, 1, 2]})
 				if(!prismaGenerateScriptExists) {
-					fs.writeJSONSync(`${process.cwd()}/package.json`, {...packageJSON, script: {...(packageJSON?.scripts), generate: "blitz prisma generate"}}, {spaces: 4})
+					fs.writeJSONSync(`${process.cwd()}/package.json`, {...packageJSON, scripts: {...(packageJSON?.scripts), generate: "blitz prisma generate"}}, {spaces: 4})
 					execSync("npm run generate", {stdio: [0, 1, 2]})
 				}
 				if(!schemaExists) {
