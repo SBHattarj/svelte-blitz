@@ -159,6 +159,7 @@ export const load = loadWithBlitz<LayoutLoad>()`);
                             "stream/web": "stream/web",
                             stream: "rollup-plugin-node-polyfills/polyfills/stream",
                             events: "rollup-plugin-node-polyfills/polyfills/events",
+                            "svelte-blitz/plugin": "svelte-blitz/plugin/index.mjs"
                         }
                     },
                     server: {
