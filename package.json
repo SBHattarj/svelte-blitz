@@ -1,16 +1,16 @@
 {
 	"name": "svelte-blitz",
-	"version": "0.1.1f",
+	"version": "0.1.2c",
 	"main": "./lib/server.cjs",
 	"browser": "./lib/client.cjs",
 	"types": "./types.d.ts",
 	"exports": {
 		".": "./lib/server.mjs",
+		"./*": "./*",
 		"./plugin": {
 			"types": "./plugin/index.d.ts",
 			"import": "./plugin/index.mjs"
-		},
-		"./*": "./*"
+		}
 	},
 	"scripts": {
 		"dev": "vite dev",
@@ -45,6 +45,10 @@
 	},
 	"prisma": {
 		"schema": "db/schema.prisma"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SBHattarj/svelte-blitz.git"
 	},
 	"dependencies": {
 		"@blitzjs/auth": "^2.0.0-beta.11",
