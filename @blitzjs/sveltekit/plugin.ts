@@ -54,10 +54,6 @@ export function svelteBlitz(viteMultyIndexOptions?: Parameters<typeof viteMultyI
 				if(!prismaSetup) fs.writeJSONSync(`${process.cwd()}/package.json`, {...(packageJSON ?? {}), prisma: {schema: "db/schema.prisma"}}, {spaces: 4})
 				if(!prismaIsInstalled) execSync("npm i prisma", {stdio: [0, 1, 2]})
 				if(!prismaClientIsInstalled) execSync("npm i @prisma/client", {stdio: [0, 1, 2]})
-				if(!prismaGenerateScriptExists) {
-					fs.writeJSONSync(`${process.cwd()}/package.json`, {...packageJSON, scripts: {...(packageJSON?.scripts), generate: "blitz prisma generate"}}, {spaces: 4})
-					execSync("npm run generate", {stdio: [0, 1, 2]})
-				}
 				if(!schemaExists) {
 					fs.ensureFileSync(`${process.cwd()}/db/schema.prisma`)
 					fs.writeFileSync(`${process.cwd()}/db/schema.prisma`, `// This is your Prisma schema file,
@@ -80,7 +76,7 @@ model Visitor {
 				}
 				if(!dbExists) {
 					fs.ensureFileSync(`${process.cwd()}/db/index.ts`)
-                    fs.writeFileSync(`${process.cwd()}/db/index.ts`, `import { enhancePrisma } from 'blitz';
+					fs.writeFileSync(`${process.cwd()}/db/index.ts`, `import { enhancePrisma } from 'blitz';
 import { PrismaClient } from '@prisma/client';
 
 const EnhancedPrisma = enhancePrisma(PrismaClient);
@@ -105,6 +101,10 @@ const seed = async () => {
 
 export default seed;
 `)
+				if(!prismaGenerateScriptExists) {
+					fs.writeJSONSync(`${process.cwd()}/package.json`, {...packageJSON, scripts: {...(packageJSON?.scripts), generate: "blitz prisma generate"}}, {spaces: 4})
+					execSync("npm run generate", {stdio: [0, 1, 2]})
+				}
 				}
 				if(!blitzClientExists) {
 					fs.ensureFileSync(`${process.cwd()}/app/blitz-client.ts`)
