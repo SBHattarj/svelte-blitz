@@ -173,6 +173,10 @@ export const load = loadWithBlitz<LayoutLoad>()`)
 							allow: [
 								...(config.server?.fs?.allow ?? []),
 								"."
+							],
+							deny: [
+								...(config.server?.fs?.deny ?? []),
+								"./vite.config.ts"
 							]
 						}
 					}
