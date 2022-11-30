@@ -1,6 +1,6 @@
 {
 	"name": "svelte-blitz",
-	"version": "0.1.2e",
+	"version": "0.1.2f",
 	"main": "./lib/server.cjs",
 	"browser": "./lib/client.cjs",
 	"types": "./types.d.ts",
