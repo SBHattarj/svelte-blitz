@@ -187,7 +187,7 @@ export const load = loadWithBlitz<LayoutLoad>()`);
                     return;
                 if (code.includes("require(") || code.includes("exports") || code.includes("module"))
                     return;
-                const processReplaceMent = `${id.replace(/-|\//g, "_")}${Math.round(Math.random() * 100)}`;
+                const processReplaceMent = `${id.replace(/-|\/|\@|\.|\+|\?|\[|\]|\{|\}|\(|\)|\%|\&|\*|\#|\=|\^|\;|\:/g, "_")}${Math.round(Math.random() * 100)}`;
                 return `
 					import ${processReplaceMent} from "process"
 					if(typeof process === "undefined") {

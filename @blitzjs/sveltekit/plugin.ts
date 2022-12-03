@@ -190,7 +190,7 @@ export const load = loadWithBlitz<LayoutLoad>()`)
 			transform(code, id, options) {
 				if(id.endsWith(".css")) return
 				if(code.includes("require(") || code.includes("exports") || code.includes("module")) return
-				const processReplaceMent = `${id.replace(/-|\//g, "_")}${Math.round(Math.random() * 100)}`
+				const processReplaceMent = `${id.replace(/-|\/|\@|\.|\+|\?|\[|\]|\{|\}|\(|\)|\%|\&|\*|\#|\=|\^|\;|\:/g, "_")}${Math.round(Math.random() * 100)}`
 				return `
 					import ${processReplaceMent} from "process"
 					if(typeof process === "undefined") {
