@@ -8,9 +8,6 @@ import path from "path"
 import { sveltekit } from '@sveltejs/kit/vite';
 import fs from "fs-extra"
 import {execSync} from "child_process"
-import {fileURLToPath} from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const getRootImports = (excludes: string[] = [], extensions = ["js", "ts"], cwd = process.cwd()) => Object.fromEntries(
 	glob.sync("**/*.*", {cwd})
@@ -26,7 +23,6 @@ export function svelteBlitz(viteMultyIndexOptions?: Parameters<typeof viteMultyI
 		tsPath(tsPathOptions),
 		...sveltekit(),
 		viteMultyIndex(viteMultyIndexOptions),
-		viteMultyIndex({...viteMultyIndexOptions, root: path.resolve(`${__dirname}`, "..")}),
 		{
 			name: "node-polyfills|root-bare-imports",
 			enforce: "pre",
@@ -37,6 +33,9 @@ export function svelteBlitz(viteMultyIndexOptions?: Parameters<typeof viteMultyI
 				const prismaGenerateScriptExists = packageJSON?.scripts?.generate === "blitz prisma generate"
 				const prismaIsInstalled = "prisma" in (packageJSON?.dependencies ?? {})
 				const prismaClientIsInstalled = "@prisma/client" in (packageJSON?.dependencies ?? {})
+				const blitzIsInstalled = "blitz" in (packageJSON?.dependencies ?? {})
+				const blitzrpcIsInstalled = "@blitzjs/rpc" in (packageJSON?.dependencies ?? {})
+				const blitzauthIsInstalled = "@blitzjs/auth" in (packageJSON?.dependencies ?? {})
                 const schemaExists = fs.existsSync(`${process.cwd()}/db/schema.prisma`)
 				const dbExists = fs.existsSync(`${process.cwd()}/db/index.ts`)
 				const dbSeedsExists = fs.existsSync(`${process.cwd()}/db/seeds.ts`)
@@ -58,6 +57,9 @@ export function svelteBlitz(viteMultyIndexOptions?: Parameters<typeof viteMultyI
 				if(!prismaSetup) fs.writeJSONSync(`${process.cwd()}/package.json`, {...(packageJSON ?? {}), prisma: {schema: "db/schema.prisma"}}, {spaces: 4})
 				if(!prismaIsInstalled) execSync("npm i prisma", {stdio: [0, 1, 2]})
 				if(!prismaClientIsInstalled) execSync("npm i @prisma/client", {stdio: [0, 1, 2]})
+				if(!blitzIsInstalled) execSync("npm i blitz@2.0.0-beta.11", {stdio: [0, 1, 2]})
+				if(!blitzrpcIsInstalled) execSync("npm i @blitzjs/rpc@2.0.0-beta.11", {stdio: [0, 1, 2]})
+				if(!blitzauthIsInstalled) execSync("npm i @blitzjs/auth@2.0.0-beta.11", {stdio: [0, 1, 2]})
 				if(!schemaExists) {
 					fs.ensureFileSync(`${process.cwd()}/db/schema.prisma`)
 					fs.writeFileSync(`${process.cwd()}/db/schema.prisma`, `// This is your Prisma schema file,
