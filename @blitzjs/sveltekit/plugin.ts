@@ -8,6 +8,9 @@ import path from "path"
 import { sveltekit } from '@sveltejs/kit/vite';
 import fs from "fs-extra"
 import {execSync} from "child_process"
+import {fileURLToPath} from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const getRootImports = (excludes: string[] = [], extensions = ["js", "ts"], cwd = process.cwd()) => Object.fromEntries(
 	glob.sync("**/*.*", {cwd})
@@ -192,10 +195,9 @@ export const load = loadWithBlitz<LayoutLoad>()`)
 				if(code.includes("require(") || code.includes("exports") || code.includes("module")) return
 				const processReplaceMent = `${id.replace(/-|\/|\@|\.|\+|\?|\[|\]|\{|\}|\(|\)|\%|\&|\*|\#|\=|\^|\;|\:/g, "_")}${Math.round(Math.random() * 100)}`
 				return `
-					import ${processReplaceMent} from "process"
+					import * as ${processReplaceMent} from "process"
 					if(typeof process === "undefined") {
-						globalThis.process = ${processReplaceMent}
-						process.env = import.meta.env
+						globalThis.process = {...${processReplaceMent}, env: import.meta.env}
 					}
 					if(process.env == null) process.env = import.meta.env
 					if(typeof __dirname === "undefined") globalThis.__dirname = import.meta.url
