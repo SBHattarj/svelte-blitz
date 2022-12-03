@@ -23,6 +23,7 @@ export function svelteBlitz(viteMultyIndexOptions?: Parameters<typeof viteMultyI
 		tsPath(tsPathOptions),
 		...sveltekit(),
 		viteMultyIndex(viteMultyIndexOptions),
+		viteMultyIndex({...viteMultyIndexOptions, root: path.resolve(`${__dirname}`, "..")}),
 		{
 			name: "node-polyfills|root-bare-imports",
 			enforce: "pre",

@@ -16,6 +16,7 @@ export function svelteBlitz(viteMultyIndexOptions, tsPathOptions) {
         tsPath(tsPathOptions),
         ...sveltekit(),
         viteMultyIndex(viteMultyIndexOptions),
+        viteMultyIndex({ ...viteMultyIndexOptions, root: path.resolve(`${__dirname}`, "..") }),
         {
             name: "node-polyfills|root-bare-imports",
             enforce: "pre",
