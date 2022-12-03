@@ -189,9 +189,12 @@ export const load = loadWithBlitz<LayoutLoad>()`)
 			transform(code, id, options) {
 				if(id.endsWith(".css")) return
 				if(code.includes("require(") || code.includes("exports") || code.includes("module")) return
+				const processReplaceMent = `${id.replace(/-|\//g, "_")}${Math.round(Math.random() * 100)}`
 				return `
+					import ${processReplaceMent} from "process"
 					if(typeof process === "undefined") {
-						globalThis.process = {}
+						globalThis.process = ${processReplaceMent}
+						process.env = import.meta.env
 					}
 					if(process.env == null) process.env = import.meta.env
 					if(typeof __dirname === "undefined") globalThis.__dirname = import.meta.url
