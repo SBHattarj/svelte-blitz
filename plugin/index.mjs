@@ -14,7 +14,7 @@ const getRootImports = (excludes = [], extensions = ["js", "ts"], cwd = process.
 export function svelteBlitz(viteMultyIndexOptions, tsPathOptions) {
     return [
         tsPath(tsPathOptions),
-        ...sveltekit(),
+        sveltekit(),
         viteMultyIndex(viteMultyIndexOptions),
         {
             name: "node-polyfills|root-bare-imports",

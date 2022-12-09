@@ -21,7 +21,7 @@ export function svelteBlitz(viteMultyIndexOptions?: Parameters<typeof viteMultyI
 	return [
 
 		tsPath(tsPathOptions),
-		...sveltekit(),
+		sveltekit(),
 		viteMultyIndex(viteMultyIndexOptions),
 		{
 			name: "node-polyfills|root-bare-imports",
