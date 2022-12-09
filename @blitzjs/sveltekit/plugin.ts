@@ -108,7 +108,7 @@ const seed = async () => {
 export default seed;
 `)
 				if(!prismaGenerateScriptExists) {
-					fs.writeJSONSync(`${process.cwd()}/package.json`, {...packageJSON, scripts: {...(packageJSON?.scripts), generate: "blitz prisma generate"}}, {spaces: 4})
+					fs.writeJSONSync(`${process.cwd()}/package.json`, {...packageJSON, scripts: {...(packageJSON?.scripts), generate: "blitz prisma generate --schema=./db/schema.prisma"}}, {spaces: 4})
 					execSync("npm run generate", {stdio: [0, 1, 2]})
 				}
 				}
@@ -170,7 +170,8 @@ export const load = loadWithBlitz<LayoutLoad>()`)
 							"stream/web": "stream/web",
 							stream: "rollup-plugin-node-polyfills/polyfills/stream",
 							events: "rollup-plugin-node-polyfills/polyfills/events",
-							"svelte-blitz/plugin": "svelte-blitz/plugin/index.mjs"
+							"svelte-blitz/plugin": "svelte-blitz/plugin/index.mjs",
+							util: 'rollup-plugin-node-polyfills/polyfills/util'
 						}
 					},
 					server: {
@@ -191,24 +192,64 @@ export const load = loadWithBlitz<LayoutLoad>()`)
 			}
 		},
 		{
-			name: "process-globalThis-dirname-polyfill",
-			transform(code, id, options) {
-				if(id.endsWith(".css")) return
-				if(code.includes("require(") || code.includes("exports") || code.includes("module")) return
-				const processReplaceMent = `${id.replace(/-|\/|\@|\.|\+|\?|\[|\]|\{|\}|\(|\)|\%|\&|\*|\#|\=|\^|\;|\:/g, "_")}${Math.round(Math.random() * 100)}`
-				return `
+            name: "process-polyfill",
+            transform(code, id, options) {
+                // console.log(options)
+
+                // if (id.endsWith(".css"))
+                //     return;
+                // if (code.includes("require(") || code.includes("exports") || code.includes("module"))
+                //     return;
+                if(!/(\s|\n)+process(\.|\s|\n)/.test(code)) return
+                const processReplaceMent = `${id.replace(/-|\/|\@|\.|\+|\?|\[|\]|\{|\}|\(|\)|\%|\&|\*|\#|\=|\^|\;|\:/g, "_")}${Math.round(Math.random() * 100)}`;
+                return `
 					import * as ${processReplaceMent} from "process"
 					if(typeof process === "undefined") {
 						globalThis.process = {...${processReplaceMent}, env: import.meta.env}
 					}
 					if(process.env == null) process.env = import.meta.env
 					if(typeof __dirname === "undefined") globalThis.__dirname = import.meta.url
+					${code}
+				`;
+            },
+            enforce: "pre"
+        },
+        {
+            name: "globalThis-polyfill",
+            transform(code, id, options) {
+                // console.log(options)
+
+                // if (id.endsWith(".css"))
+                //     return;
+                // if (code.includes("require(") || code.includes("exports") || code.includes("module"))
+                //     return;
+                if(!/(\s|\n)+global(\.|\s|\n)/.test(code)) return
+                const processReplaceMent = `${id.replace(/-|\/|\@|\.|\+|\?|\[|\]|\{|\}|\(|\)|\%|\&|\*|\#|\=|\^|\;|\:/g, "_")}${Math.round(Math.random() * 100)}`;
+                return `
 					globalThis.global = globalThis
 					${code}
-				`
-			},
-			enforce: "pre"
-		}, 
+				`;
+            },
+            enforce: "pre"
+        },
+        {
+            name: "dirname-polyfill",
+            transform(code, id, options) {
+                // console.log(options)
+
+                // if (id.endsWith(".css"))
+                //     return;
+                // if (code.includes("require(") || code.includes("exports") || code.includes("module"))
+                //     return;
+                if(!/(\s|\n)+\_\_dirname(\.|\s|\n)/.test(code)) return
+                const processReplaceMent = `${id.replace(/-|\/|\@|\.|\+|\?|\[|\]|\{|\}|\(|\)|\%|\&|\*|\#|\=|\^|\;|\:/g, "_")}${Math.round(Math.random() * 100)}`;
+                return `
+                    if(typeof __dirname === "undefined") globalThis.__dirname = import.meta.url
+					${code}
+				`;
+            },
+            enforce: "pre"
+        },
 		{
 			async load(id, options) {
 				if (options?.ssr || !/[\\/](queries|mutations)[\\/]/.test(id)) return;
