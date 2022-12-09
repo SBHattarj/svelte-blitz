@@ -1,6 +1,6 @@
 {
 	"name": "svelte-blitz",
-	"version": "0.1.4b",
+	"version": "0.1.4c",
 	"main": "./lib/server.cjs",
 	"browser": "./lib/client.cjs",
 	"types": "./types.d.ts",
@@ -64,7 +64,7 @@
 		"next": "^12.3.1",
 		"node-mocks-http": "^1.11.0",
 		"rollup-plugin-node-polyfills": "^0.2.1",
-		"vite-multy-index-support": "^0.0.1-i",
+		"vite-multy-index-support": "^0.0.2",
 		"vite-tsconfig-paths": "^3.5.0"
 	}
 }
